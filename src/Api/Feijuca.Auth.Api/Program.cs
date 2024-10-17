@@ -2,6 +2,7 @@ using Feijuca.Auth.Infra.CrossCutting.Config;
 using Feijuca.Auth.Infra.CrossCutting.Extensions;
 using Feijuca.Auth.Infra.CrossCutting.Handlers;
 using Feijuca.Auth.Infra.CrossCutting.Middlewares;
+using Feijuca.Auth.Models;
 
 var builder = WebApplication.CreateBuilder(args);
 var enviroment = Environment.GetEnvironmentVariable("ASPNETCORE_ENVIRONMENT");
@@ -16,23 +17,20 @@ builder.Configuration
     .AddJsonFile($"appsettings.{enviroment}.json", true, reloadOnChange: true)
     .AddEnvironmentVariables();
 
-var applicationSettings = builder.Configuration.GetSection("Settings").Get<Settings>()!;
-
-builder.Services
-    .AddSingleton<ISettings>(applicationSettings)
-    .AddControllers();
+var applicationSettings = builder.Configuration.GetSection("Settings").Get<MongoSettings>()!;
 
 builder.Services.AddSwaggerGen();
 builder.Services
     .AddExceptionHandler<GlobalExceptionHandler>()
     .AddProblemDetails()
-    .AddApiAuthentication(applicationSettings.AuthSettings)
     .AddLoggingDependency()
     .AddMediator()
     .AddRepositories()
     .AddServices()
-    .AddSwagger(applicationSettings.AuthSettings)
-    .AddHttpClients(applicationSettings.AuthSettings)
+    .AddMongo(applicationSettings)
+    .AddApiAuthentication(out AuthSettings authSettings)
+    .AddSwagger(authSettings)
+    .AddHttpClients(authSettings.AuthServerUrl)
     .AddEndpointsApiExplorer()
     .AddCors(options =>
     {
@@ -53,7 +51,7 @@ app.UseCors("AllowAllOrigins")
    .UseSwaggerUI(c =>
    {
        c.SwaggerEndpoint("/swagger/v1/swagger.json", "Feijuca.Auth.Api");
-       c.OAuthClientId(applicationSettings!.AuthSettings!.ClientId);
+       c.OAuthClientId(null); //passar valores que vao vir do banco
        c.OAuthUseBasicAuthenticationWithAccessCodeGrant();
    });
 

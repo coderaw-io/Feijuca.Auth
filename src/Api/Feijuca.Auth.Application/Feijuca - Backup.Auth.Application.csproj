@@ -29,4 +29,8 @@
     <ProjectReference Include="..\Feijuca.Auth.Domain\Feijuca.Auth.Domain.csproj" />
   </ItemGroup>
 
+  <ItemGroup>
+    <Folder Include="Commands\NewFolder\" />
+  </ItemGroup>
+
 </Project>
