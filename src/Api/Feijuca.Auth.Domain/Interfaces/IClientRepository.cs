@@ -5,6 +5,7 @@ namespace Feijuca.Auth.Domain.Interfaces
 {
     public interface IClientRepository : IBaseRepository
     {
-        Task<Result<IEnumerable<Client>>> GetClientsAsync(CancellationToken cancellationToken);
+        Task<Result<IEnumerable<ClientEntity>>> GetClientsAsync(CancellationToken cancellationToken);
+        Task<bool> CreateClientAsync(ClientEntity client, CancellationToken cancellationToken);
     }
 }

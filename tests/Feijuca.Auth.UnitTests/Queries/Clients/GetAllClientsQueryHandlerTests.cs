@@ -26,8 +26,8 @@ namespace Feijuca.Auth.Api.UnitTests.Queries.Clients
             // Arange
             var clientsQuery = _fixture.Create<GetAllClientsQuery>();
             var cancellationToken = _fixture.Create<CancellationToken>();
-            var clients = _fixture.CreateMany<Client>();
-            var clientsResult = Result<IEnumerable<Client>>.Success(clients);
+            var clients = _fixture.CreateMany<ClientEntity>();
+            var clientsResult = Result<IEnumerable<ClientEntity>>.Success(clients);
 
             _clientRepositoryMock
                 .Setup(repo => repo.GetClientsAsync(It.IsAny<CancellationToken>()))
@@ -52,7 +52,7 @@ namespace Feijuca.Auth.Api.UnitTests.Queries.Clients
             // Arange
             var clientsQuery = _fixture.Create<GetAllClientsQuery>();
             var cancellationToken = _fixture.Create<CancellationToken>();
-            var clientsResult = Result<IEnumerable<Client>>.Failure(ClientErrors.GetClientsErrors);
+            var clientsResult = Result<IEnumerable<ClientEntity>>.Failure(ClientErrors.GetClientsErrors);
 
             _clientRepositoryMock
                 .Setup(repo => repo.GetClientsAsync(It.IsAny<CancellationToken>()))

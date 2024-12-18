@@ -12,7 +12,7 @@ namespace Feijuca.Auth.Api.Controllers
     [Route("api/v1")]
     [ApiController]
     [Authorize]
-    public class GroupUserController(IMediator mediator) : ControllerBase
+    public class GroupsUsersController(IMediator mediator) : ControllerBase
     {
         private readonly IMediator _mediator = mediator;
 

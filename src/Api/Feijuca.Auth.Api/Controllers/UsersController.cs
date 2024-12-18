@@ -12,9 +12,9 @@ using System.Security.Claims;
 
 namespace Feijuca.Auth.Api.Controllers
 {
-    [Route("api/v1")]
+    [Route("api/v1/users")]
     [ApiController]
-    public class UserController(IMediator mediator) : ControllerBase
+    public class UsersController(IMediator mediator) : ControllerBase
     {
         private readonly IMediator _mediator = mediator;
 
@@ -33,7 +33,6 @@ namespace Feijuca.Auth.Api.Controllers
         /// <response code="403">The request was understood, but the server is refusing to fulfill it due to insufficient permissions.</response>
         /// <response code="500">An internal server error occurred while processing the request.</response>
         [HttpGet]
-        [Route("/users", Name = nameof(GetUsers))]
         [ProducesResponseType(StatusCodes.Status200OK)]
         [ProducesResponseType(StatusCodes.Status500InternalServerError)]
         [ProducesResponseType(StatusCodes.Status400BadRequest)]
@@ -66,7 +65,6 @@ namespace Feijuca.Auth.Api.Controllers
         /// <response code="403">The request was understood, but the server is refusing to fulfill it due to insufficient permissions.</response>
         /// <response code="500">An internal server error occurred while processing the request.</response>
         [HttpPost]
-        [Route("/user", Name = nameof(CreateUser))]
         [ProducesResponseType(StatusCodes.Status201Created)]
         [ProducesResponseType(StatusCodes.Status500InternalServerError)]
         [ProducesResponseType(StatusCodes.Status400BadRequest)]
@@ -98,7 +96,6 @@ namespace Feijuca.Auth.Api.Controllers
         /// <response code="400">The request was invalid, such as incorrect credentials.</response>
         /// <response code="500">An internal server error occurred while processing the request.</response>
         [HttpPut]
-        [Route("/user", Name = nameof(UpdateUser))]
         [ProducesResponseType(StatusCodes.Status202Accepted)]
         [ProducesResponseType(StatusCodes.Status500InternalServerError)]
         [ProducesResponseType(StatusCodes.Status400BadRequest)]
@@ -132,7 +129,7 @@ namespace Feijuca.Auth.Api.Controllers
         /// <response code="403">The request was understood, but the server is refusing to fulfill it due to insufficient permissions.</response>
         /// <response code="500">An internal server error occurred while processing the request.</response>
         [HttpDelete]
-        [Route("/user/{id}", Name = nameof(DeleteUser))]
+        [Route("{id}", Name = nameof(DeleteUser))]
         [ProducesResponseType(StatusCodes.Status204NoContent)]
         [ProducesResponseType(StatusCodes.Status500InternalServerError)]
         [ProducesResponseType(StatusCodes.Status400BadRequest)]
@@ -165,7 +162,7 @@ namespace Feijuca.Auth.Api.Controllers
         /// <response code="403">The request was understood, but the server is refusing to fulfill it due to insufficient permissions.</response>
         /// <response code="500">An internal server error occurred while processing the request.</response>
         [HttpPost]
-        [Route("/user/revoke-session", Name = nameof(RevokeUserSessions))]
+        [Route("revoke-session", Name = nameof(RevokeUserSessions))]
         [ProducesResponseType(StatusCodes.Status202Accepted)]
         [ProducesResponseType(StatusCodes.Status400BadRequest)]
         [ProducesResponseType(StatusCodes.Status500InternalServerError)]
@@ -195,7 +192,7 @@ namespace Feijuca.Auth.Api.Controllers
         /// <response code="400">The request was invalid or the logout could not be processed.</response>
         /// <response code="500">An internal server error occurred while processing the request.</response>
         [HttpPost]
-        [Route("/user/logout", Name = nameof(Logout))]
+        [Route("logout", Name = nameof(Logout))]
         [ProducesResponseType(StatusCodes.Status200OK)]
         [ProducesResponseType(StatusCodes.Status400BadRequest)]
         [ProducesResponseType(StatusCodes.Status500InternalServerError)]
@@ -225,7 +222,7 @@ namespace Feijuca.Auth.Api.Controllers
         /// <response code="400">The request was invalid, such as incorrect credentials.</response>
         /// <response code="500">An internal server error occurred while processing the request.</response>
         [HttpPost]
-        [Route("/user/login", Name = nameof(Login))]
+        [Route("login", Name = nameof(Login))]
         [ProducesResponseType(StatusCodes.Status200OK)]
         [ProducesResponseType(StatusCodes.Status500InternalServerError)]
         [ProducesResponseType(StatusCodes.Status400BadRequest)]
@@ -254,7 +251,7 @@ namespace Feijuca.Auth.Api.Controllers
         /// <response code="400">The request was invalid due to an issue with the token or user authentication.</response>
         /// <response code="500">An internal server error occurred while processing the request.</response>
         [HttpGet]
-        [Route("/user/decode-token", Name = nameof(DecodeToken))]
+        [Route("decode-token", Name = nameof(DecodeToken))]
         [ProducesResponseType(StatusCodes.Status200OK, Type = typeof(UserResponse))]
         [ProducesResponseType(StatusCodes.Status500InternalServerError)]
         [ProducesResponseType(StatusCodes.Status400BadRequest)]
@@ -292,7 +289,7 @@ namespace Feijuca.Auth.Api.Controllers
         /// <response code="400">The request was invalid due to an issue with the refresh token.</response>
         /// <response code="500">An internal server error occurred while processing the request.</response>
         [HttpPost]
-        [Route("/user/refresh-token", Name = nameof(RefreshToken))]
+        [Route("refresh-token", Name = nameof(RefreshToken))]
         [ProducesResponseType(StatusCodes.Status200OK)]
         [ProducesResponseType(StatusCodes.Status500InternalServerError)]
         [ProducesResponseType(StatusCodes.Status400BadRequest)]

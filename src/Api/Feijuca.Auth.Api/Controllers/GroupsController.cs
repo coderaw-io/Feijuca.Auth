@@ -9,10 +9,10 @@ using Microsoft.AspNetCore.Mvc;
 
 namespace Feijuca.Auth.Api.Controllers
 {
-    [Route("api/v1")]
+    [Route("api/v1/groups")]
     [ApiController]
     [Authorize]
-    public class GroupController(IMediator mediator) : ControllerBase
+    public class GroupsController(IMediator mediator) : ControllerBase
     {
         private readonly IMediator _mediator = mediator;
 
@@ -20,7 +20,7 @@ namespace Feijuca.Auth.Api.Controllers
         /// Returns all groups registered in the realm
         /// </summary>
         /// <returns>
-        /// A 200 OK status code along with the list of groups if the operation is successful; 
+        /// A 200 OK status code along with the list of groups if the operation is successful;
         /// otherwise, a 400 Bad Request status code with an error message, or a 500 Internal Server Error status code if something goes wrong.
         /// </returns>
         /// <param name="cancellationToken">A <see cref="T:System.Threading.CancellationToken"/> used to observe cancellation requests for the operation.</param>
@@ -28,7 +28,6 @@ namespace Feijuca.Auth.Api.Controllers
         /// <response code="400">The request was invalid or could not be processed.</response>
         /// <response code="500">An internal server error occurred during the processing of the request.</response>
         [HttpGet]
-        [Route("/groups", Name = nameof(GetGroups))]
         [ProducesResponseType(StatusCodes.Status200OK)]
         [ProducesResponseType(StatusCodes.Status500InternalServerError)]
         [ProducesResponseType(StatusCodes.Status400BadRequest)]
@@ -50,7 +49,7 @@ namespace Feijuca.Auth.Api.Controllers
         /// Deletes an existing group from the specified Keycloak realm.
         /// </summary>
         /// <returns>
-        /// A 204 No Content status code if the group was successfully deleted; 
+        /// A 204 No Content status code if the group was successfully deleted;
         /// otherwise, a 400 Bad Request status code with an error message, or a 500 Internal Server Error status code if something goes wrong.
         /// </returns>
         /// <param name="id">The unique identifier of the group to be deleted.</param>
@@ -59,12 +58,12 @@ namespace Feijuca.Auth.Api.Controllers
         /// <response code="400">The request was invalid or could not be processed.</response>
         /// <response code="500">An internal server error occurred during the processing of the request.</response>
         [HttpDelete]
-        [Route("/group/{id}", Name = nameof(DeleteGroup))]
+        [Route("{id}", Name = nameof(DeleteGroup))]
         [ProducesResponseType(StatusCodes.Status204NoContent)]
         [ProducesResponseType(StatusCodes.Status500InternalServerError)]
         [ProducesResponseType(StatusCodes.Status400BadRequest)]
         [RequiredRole("Feijuca.ApiWriter")]
-        public async Task<IActionResult> DeleteGroup([FromRoute] Guid id, CancellationToken cancellationToken)
+        public async Task<IActionResult> DeleteGroup([FromRoute] string id, CancellationToken cancellationToken)
         {
             var result = await _mediator.Send(new DeleteGroupCommand(id), cancellationToken);
 
@@ -81,7 +80,7 @@ namespace Feijuca.Auth.Api.Controllers
         /// Adds a new group to the specified Keycloak realm.
         /// </summary>
         /// <returns>
-        /// A 201 Created status code along with a success message if the group is successfully created; 
+        /// A 201 Created status code along with a success message if the group is successfully created;
         /// otherwise, a 400 Bad Request status code with an error message, or a 500 Internal Server Error status code if something goes wrong.
         /// </returns>
         /// <param name="addGroupRequest">An object of type <see cref="T:Feijuca.Auth.Common.Models.AddGroupRequest"/> containing the details of the group to be created.</param>
@@ -90,7 +89,6 @@ namespace Feijuca.Auth.Api.Controllers
         /// <response code="400">The request was invalid or could not be processed.</response>
         /// <response code="500">An internal server error occurred during the processing of the request.</response>
         [HttpPost]
-        [Route("/group", Name = nameof(CreateGroup))]
         [ProducesResponseType(StatusCodes.Status201Created)]
         [ProducesResponseType(StatusCodes.Status500InternalServerError)]
         [ProducesResponseType(StatusCodes.Status400BadRequest)]

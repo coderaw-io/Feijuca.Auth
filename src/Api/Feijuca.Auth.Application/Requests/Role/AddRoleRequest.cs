@@ -1,4 +1,4 @@
 ﻿namespace Feijuca.Auth.Application.Requests.Role
 {
-    public record AddRoleRequest(Guid ClientId, string Name, string Description);
+    public record AddRoleRequest(string Id, string Name, string Description);
 }

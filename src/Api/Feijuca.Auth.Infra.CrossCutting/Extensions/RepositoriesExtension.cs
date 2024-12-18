@@ -13,10 +13,11 @@ namespace Feijuca.Auth.Infra.CrossCutting.Extensions
             services.AddScoped<IAuthRepository, AuthRepository>();
             services.AddScoped<IGroupRepository, GroupRepository>();
             services.AddScoped<IGroupUsersRepository, UserGroupRepository>();
-            services.AddScoped<IRoleRepository, RoleRepository>();
+            services.AddScoped<IClientRoleRepository, ClientRoleRepository>();
             services.AddScoped<IClientRepository, ClientRepository>();
             services.AddScoped<IRealmRepository, RealmRepository>();
             services.AddScoped<IGroupRolesRepository, GroupRolesRepository>();
+            services.AddScoped<IClientScopesRepository, ClientScopesRepository>();
 
             return services;
         }

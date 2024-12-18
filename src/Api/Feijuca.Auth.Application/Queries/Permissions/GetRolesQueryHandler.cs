@@ -6,10 +6,10 @@ using MediatR;
 
 namespace Feijuca.Auth.Application.Queries.Permissions
 {
-    public class GetRolesQueryHandler(IClientRepository clientRepository, IRoleRepository roleRepository) : IRequestHandler<GetRolesQuery, Result<IEnumerable<ClientRoleResponse>>>
+    public class GetRolesQueryHandler(IClientRepository clientRepository, IClientRoleRepository roleRepository) : IRequestHandler<GetRolesQuery, Result<IEnumerable<ClientRoleResponse>>>
     {
         private readonly IClientRepository _clientRepository = clientRepository;
-        private readonly IRoleRepository _roleRepository = roleRepository;
+        private readonly IClientRoleRepository _roleRepository = roleRepository;
 
         public async Task<Result<IEnumerable<ClientRoleResponse>>> Handle(GetRolesQuery request, CancellationToken cancellationToken)
         {

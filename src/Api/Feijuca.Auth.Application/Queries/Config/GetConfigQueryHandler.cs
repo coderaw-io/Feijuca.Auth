@@ -9,16 +9,16 @@ namespace Feijuca.Auth.Application.Queries.Config
     {
         private readonly IConfigRepository _configRepository = configRepository;
 
-        public Task<Result<KeycloakSettings>> Handle(GetConfigQuery request, CancellationToken cancellationToken)
+        public async Task<Result<KeycloakSettings>> Handle(GetConfigQuery request, CancellationToken cancellationToken)
         {
-            var result = _configRepository.GetConfig();
+            var result = await _configRepository.GetConfigAsync();
 
             if (result is null)
             {
-                return Task.FromResult(Result<KeycloakSettings>.Failure(ConfigErrors.NoConfigInserted));
+                return Result<KeycloakSettings>.Failure(ConfigErrors.NoConfigInserted);
             }
 
-            return Task.FromResult(Result<KeycloakSettings>.Success(result));
+            return Result<KeycloakSettings>.Success(result);
         }
     }
 }

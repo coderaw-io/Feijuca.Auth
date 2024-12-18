@@ -7,11 +7,10 @@ using Newtonsoft.Json;
 
 namespace Feijuca.Auth.Infra.Data.Repositories
 {
-    public class AuthRepository(TokenCredentials tokenCredentials, IHttpClientFactory httpClientFactory, ITenantService tenantService) : IAuthRepository
+    public class AuthRepository(TokenCredentials tokenCredentials, IHttpClientFactory httpClientFactory) : IAuthRepository
     {
         private readonly TokenCredentials _tokenCredentials = tokenCredentials;
         private readonly IHttpClientFactory _httpClientFactory = httpClientFactory;
-        private readonly ITenantService _tenantService = tenantService;
 
         public async Task<Result<TokenDetails>> GetAccessTokenAsync(CancellationToken cancellationToken)
         {
@@ -24,13 +23,13 @@ namespace Feijuca.Auth.Infra.Data.Repositories
 
             using var httpClient = _httpClientFactory.CreateClient("KeycloakClient");
             var url = httpClient.BaseAddress
-            .AppendPathSegment("realms")
-            .AppendPathSegment(_tenantService.Tenant)
-            .AppendPathSegment("protocol")
-            .AppendPathSegment("openid-connect")
-            .AppendPathSegment("token");
+                .AppendPathSegment("realms")
+                .AppendPathSegment("master")
+                .AppendPathSegment("protocol")
+                .AppendPathSegment("openid-connect")
+                .AppendPathSegment("token");
 
-            var response = await httpClient.PostAsync(url, requestData, cancellationToken);
+            using var response =  await httpClient.PostAsync(url, requestData, cancellationToken);
 
             if (response.IsSuccessStatusCode)
             {
