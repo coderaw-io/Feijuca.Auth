@@ -1,5 +1,6 @@
 ﻿using Feijuca.Auth.Application.Commands.Config;
 using Feijuca.Auth.Application.Queries.Config;
+using Feijuca.Auth.Application.Requests.Config;
 using Feijuca.Auth.Common.Models;
 using MediatR;
 using Microsoft.AspNetCore.Mvc;
@@ -16,7 +17,7 @@ namespace Feijuca.Auth.Api.Controllers
         /// Retrieves the existing configuration settings.
         /// </summary>
         /// <returns>
-        /// A 200 OK status code along with the configuration if the operation is successful; 
+        /// A 200 OK status code along with the configuration if the operation is successful;
         /// otherwise, a 400 Bad Request status code with an error message, or a 500 Internal Server Error status code if something goes wrong.
         /// </returns>
         /// <param name="cancellationToken">A <see cref="T:System.Threading.CancellationToken"/> used to observe cancellation requests for the operation.</param>
@@ -24,7 +25,7 @@ namespace Feijuca.Auth.Api.Controllers
         /// <response code="400">The request was invalid or could not be processed.</response>
         /// <response code="500">An internal server error occurred during the processing of the request.</response>
         [HttpGet]
-        [ProducesResponseType(StatusCodes.Status200OK)]
+        [ProducesResponseType(StatusCodes.Status201Created)]
         [ProducesResponseType(StatusCodes.Status500InternalServerError)]
         [ProducesResponseType(StatusCodes.Status400BadRequest)]
         public async Task<IActionResult> GetConfig(CancellationToken cancellationToken)
@@ -41,10 +42,10 @@ namespace Feijuca.Auth.Api.Controllers
         }
 
         /// <summary>
-        /// Inserts a new configuration into the system.
+        /// Inserts a new configuration into the Feijuca.Auth.
         /// </summary>
         /// <returns>
-        /// A 201 Created status code along with the newly inserted configuration if the operation is successful; 
+        /// A 201 Created status code along with the newly inserted configuration if the operation is successful;
         /// otherwise, a 400 Bad Request status code with an error message, or a 500 Internal Server Error status code if something goes wrong.
         /// </returns>
         /// <param name="keycloakSettings">An object of type <see cref="T:Feijuca.Auth.Common.Models.KeycloakSettings"/> containing the configuration details to be inserted.</param>
@@ -56,13 +57,20 @@ namespace Feijuca.Auth.Api.Controllers
         [ProducesResponseType(StatusCodes.Status201Created)]
         [ProducesResponseType(StatusCodes.Status500InternalServerError)]
         [ProducesResponseType(StatusCodes.Status400BadRequest)]
-        public async Task<IActionResult> InsertConfig([FromBody] KeycloakSettings keycloakSettings, CancellationToken cancellationToken)
+        public async Task<IActionResult> InsertConfig([FromBody] AddKeycloakSettings keycloakSettings, CancellationToken cancellationToken)
         {
-            var result = await _mediator.Send(new AddConfigCommand(keycloakSettings), cancellationToken);
+            var keyCloakSettings = new KeycloakSettings
+            {
+                Client = keycloakSettings.Client,
+                Secrets = keycloakSettings.Secrets,
+                ServerSettings = keycloakSettings.ServerSettings
+            };
+
+            var result = await _mediator.Send(new AddConfigCommand(keyCloakSettings), cancellationToken);
 
             if (result.IsSuccess)
             {
-                return Ok(result.Response);
+                return Created("/api/v1/config", result.Response);
             }
 
             var responseError = Result<string>.Failure(result.Error);

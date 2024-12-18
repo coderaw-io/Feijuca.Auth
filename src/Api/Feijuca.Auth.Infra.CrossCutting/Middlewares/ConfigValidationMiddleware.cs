@@ -16,7 +16,7 @@ namespace Feijuca.Auth.Infra.CrossCutting.Middlewares
                 return;
             }
 
-            var configResult = configRepository.GetConfig();
+            var configResult = configRepository.GetConfigAsync();
 
             if (configResult == null)
             {

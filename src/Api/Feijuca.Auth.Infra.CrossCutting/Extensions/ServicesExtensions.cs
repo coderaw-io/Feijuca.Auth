@@ -10,6 +10,7 @@ namespace Feijuca.Auth.Infra.CrossCutting.Extensions
         {
             services.AddScoped<ITenantService, TenantService>();
             services.AddScoped<ILoginService, LoginService>();
+            services.AddScoped<IRealmService, RealmService>();
 
             return services;
         }
