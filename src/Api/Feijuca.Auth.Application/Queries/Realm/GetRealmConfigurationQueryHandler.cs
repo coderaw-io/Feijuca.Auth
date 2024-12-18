@@ -7,7 +7,7 @@ namespace Feijuca.Auth.Application.Queries.Realm
     {
         public async Task<string> Handle(GetRealmConfigurationQuery request, CancellationToken cancellationToken)
         {
-            await _realmRepository.GetRealmConfig(request.Name, cancellationToken);
+            await _realmRepository.GetRealmConfigAsync(request.Name, cancellationToken);
             throw new NotImplementedException();
         }
     }

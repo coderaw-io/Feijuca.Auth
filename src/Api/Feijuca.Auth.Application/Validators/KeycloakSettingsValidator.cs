@@ -21,21 +21,6 @@ namespace Feijuca.Auth.Application.Validators
                 .NotNull()
                 .NotEmpty()
                 .WithMessage($"The {nameof(KeycloakSettings.ServerSettings.Url)} field is required.");
-
-            RuleFor(x => x.Realm.Name)
-                .NotNull()
-                .NotEmpty()
-                .WithMessage($"The {nameof(KeycloakSettings.Realm.Name)} field is required.");
-
-            RuleFor(x => x.Realm.Audience)
-                .NotNull()
-                .NotEmpty()
-                .WithMessage($"The {nameof(KeycloakSettings.Realm.Audience)} field is required.");
-
-            RuleFor(x => x.Realm.Issuer)
-                .NotNull()
-                .NotEmpty()
-                .WithMessage($"The {nameof(KeycloakSettings.Realm.Issuer)} field is required.");
         }
     }
 }

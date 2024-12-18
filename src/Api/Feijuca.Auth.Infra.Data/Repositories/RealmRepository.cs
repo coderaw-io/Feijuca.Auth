@@ -1,6 +1,8 @@
-﻿using Feijuca.Auth.Domain.Interfaces;
+﻿using Feijuca.Auth.Domain.Entities;
+using Feijuca.Auth.Domain.Interfaces;
 using Flurl;
 using Newtonsoft.Json;
+using System.Text;
 
 namespace Feijuca.Auth.Infra.Data.Repositories
 {
@@ -8,7 +10,35 @@ namespace Feijuca.Auth.Infra.Data.Repositories
     {
         private readonly IAuthRepository _authRepository = authRepository;
 
-        public async Task<string> GetRealmConfig(string name, CancellationToken cancellationToken)
+        public async Task<bool> CreateRealmAsync(RealmEntity realm, CancellationToken cancellationToken)
+        {
+            var tokenDetails = await _authRepository.GetAccessTokenAsync(cancellationToken);
+            using var httpClient = CreateHttpClientWithHeaders(tokenDetails.Response.Access_Token);
+
+            var url = httpClient.BaseAddress
+                   .AppendPathSegment("admin")
+                   .AppendPathSegment("realms");
+
+            var realmBody = new
+            {
+                realm = realm.Realm,
+                enabled = realm.Enabled,
+                displayName = realm.DisplayName
+            };
+
+            var jsonContent = JsonConvert.SerializeObject(realmBody);
+            var content = new StringContent(jsonContent, Encoding.UTF8, "application/json");
+
+            var resut = await httpClient.PostAsync(url, content, cancellationToken);
+            if (resut.IsSuccessStatusCode)
+            {
+                return true;
+            }
+
+            return false;
+        }
+
+        public async Task<string> GetRealmConfigAsync(string name, CancellationToken cancellationToken)
         {
             var tokenDetails = await _authRepository.GetAccessTokenAsync(cancellationToken);
             var httpClient = CreateHttpClientWithHeaders(tokenDetails.Response.Access_Token);

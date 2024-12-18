@@ -1,5 +1,4 @@
-﻿using Feijuca.Auth.Common.Models;
-using Feijuca.Auth.Domain.Entities;
+﻿using Feijuca.Auth.Domain.Entities;
 using Feijuca.Auth.Domain.Interfaces;
 using MongoDB.Driver;
 
@@ -16,11 +15,23 @@ namespace Feijuca.Auth.Infra.Data.Repositories
             return true;
         }
 
-        public KeycloakSettings GetConfig()
+        public async Task<KeycloakSettingsEntity> GetConfigAsync()
         {
-            var config = _collection.Find(Builders<KeycloakSettingsEntity>.Filter.Empty).FirstOrDefault();
+            var config = await _collection.Find(Builders<KeycloakSettingsEntity>.Filter.Empty).FirstOrDefaultAsync();
 
             return config;
+        }
+
+        public async Task<bool> UpdateRealmConfigAsync(Guid id, KeycloakSettingsEntity keycloakSettings)
+        {
+            var filter = Builders<KeycloakSettingsEntity>.Filter.Eq(e => e.Id, id);
+
+            var update = Builders<KeycloakSettingsEntity>.Update
+                .Set(e => e.Realms, keycloakSettings.Realms);
+
+            var result = await _collection.UpdateOneAsync(filter, update);
+
+            return result.ModifiedCount > 0;
         }
     }
 }

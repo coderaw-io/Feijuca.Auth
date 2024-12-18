@@ -11,7 +11,7 @@ namespace Feijuca.Auth.Application.Mappers
             {
                 Id = Guid.NewGuid(),
                 Client = KeycloakSettings.Client,
-                Realm = KeycloakSettings.Realm,
+                Realms = KeycloakSettings.Realms,
                 Secrets = KeycloakSettings.Secrets,
                 ServerSettings = KeycloakSettings.ServerSettings
             };
@@ -22,7 +22,7 @@ namespace Feijuca.Auth.Application.Mappers
             return new KeycloakSettings
             {
                 Client = KeycloakSettings.Client,
-                Realm = KeycloakSettings.Realm,
+                Realms = KeycloakSettings.Realms,
                 Secrets = KeycloakSettings.Secrets,
                 ServerSettings = KeycloakSettings.ServerSettings
             };
