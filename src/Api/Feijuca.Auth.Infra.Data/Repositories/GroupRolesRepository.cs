@@ -19,7 +19,7 @@ namespace Feijuca.Auth.Infra.Data.Repositories
         public async Task<Result<bool>> AddRoleToGroupAsync(string groupId, string clientId, Guid roleId, string roleName, CancellationToken cancellationToken)
         {
             var tokenDetails = await _authRepository.GetAccessTokenAsync(cancellationToken);
-            var httpClient = CreateHttpClientWithHeaders(tokenDetails.Response.Access_Token);
+            using var httpClient = CreateHttpClientWithHeaders(tokenDetails.Response.Access_Token);
 
             var url = httpClient.BaseAddress
                     .AppendPathSegment("admin")
@@ -38,7 +38,7 @@ namespace Feijuca.Auth.Infra.Data.Repositories
 
             var content = new StringContent(JsonConvert.SerializeObject(roleData), Encoding.UTF8, "application/json");
 
-            var response = await httpClient.PostAsync(url, content, cancellationToken);
+            using var response = await httpClient.PostAsync(url, content, cancellationToken);
 
             if (response.IsSuccessStatusCode)
             {
@@ -51,7 +51,7 @@ namespace Feijuca.Auth.Infra.Data.Repositories
         public async Task<Result<IEnumerable<ClientMapping>>> GetGroupRolesAsync(string groupId, CancellationToken cancellationToken)
         {
             var tokenDetails = await _authRepository.GetAccessTokenAsync(cancellationToken);
-            var httpClient = CreateHttpClientWithHeaders(tokenDetails.Response.Access_Token);
+            using var httpClient = CreateHttpClientWithHeaders(tokenDetails.Response.Access_Token);
 
             var url = httpClient.BaseAddress
                     .AppendPathSegment("admin")
@@ -61,7 +61,7 @@ namespace Feijuca.Auth.Infra.Data.Repositories
                     .AppendPathSegment(groupId)
                     .AppendPathSegment("role-mappings");
 
-            var response = await httpClient.GetAsync(url, cancellationToken);
+            using var response = await httpClient.GetAsync(url, cancellationToken);
 
             if (response.IsSuccessStatusCode)
             {
@@ -81,7 +81,7 @@ namespace Feijuca.Auth.Infra.Data.Repositories
         public async Task<Result> RemoveRoleFromGroupAsync(string clientId, string groupId, Guid roleId, string roleName, CancellationToken cancellationToken)
         {
             var tokenDetails = await _authRepository.GetAccessTokenAsync(cancellationToken);
-            var httpClient = CreateHttpClientWithHeaders(tokenDetails.Response.Access_Token);
+            using var httpClient = CreateHttpClientWithHeaders(tokenDetails.Response.Access_Token);
 
             var url = httpClient.BaseAddress
                     .AppendPathSegment("admin")
@@ -106,7 +106,7 @@ namespace Feijuca.Auth.Infra.Data.Repositories
                 Content = new StringContent(body, Encoding.UTF8, "application/json")
             };
 
-            var response = await httpClient.SendAsync(request, cancellationToken);
+            using var response = await httpClient.SendAsync(request, cancellationToken);
 
             if (response.IsSuccessStatusCode)
             {

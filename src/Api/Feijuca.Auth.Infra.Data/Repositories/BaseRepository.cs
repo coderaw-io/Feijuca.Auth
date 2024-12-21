@@ -1,5 +1,7 @@
-﻿using Feijuca.Auth.Domain.Interfaces;
+﻿using Feijuca.Auth.Common.Models;
+using Feijuca.Auth.Domain.Interfaces;
 using System.Net.Http.Headers;
+using System.Threading;
 
 namespace Feijuca.Auth.Infra.Data.Repositories
 {

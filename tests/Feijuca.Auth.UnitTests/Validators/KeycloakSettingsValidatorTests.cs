@@ -17,8 +17,8 @@ namespace Feijuca.Auth.Api.UnitTests.Validators
             // Arrange
             var invalidKeycloakSettings = new KeycloakSettings
             {
-                Client = new Client { ClientId = null! },
-                Secrets = new Secrets { ClientSecret = null! },
+                Client = new Client { MasterClientId = null! },
+                Secrets = new Secrets { MasterClientSecret = null! },
                 ServerSettings = new ServerSettings { Url = null! },
                 Realms = [
                     new Realm
@@ -38,8 +38,8 @@ namespace Feijuca.Auth.Api.UnitTests.Validators
                .Should()
                .BeFalse();
 
-            result.Errors.Should().Contain(e => e.ErrorMessage == $"The {nameof(KeycloakSettings.Client.ClientId)} field is required.");
-            result.Errors.Should().Contain(e => e.ErrorMessage == $"The {nameof(KeycloakSettings.Secrets.ClientSecret)} field is required.");
+            result.Errors.Should().Contain(e => e.ErrorMessage == $"The {nameof(KeycloakSettings.Client.MasterClientId)} field is required.");
+            result.Errors.Should().Contain(e => e.ErrorMessage == $"The {nameof(KeycloakSettings.Secrets.MasterClientSecret)} field is required.");
             result.Errors.Should().Contain(e => e.ErrorMessage == $"The {nameof(KeycloakSettings.ServerSettings.Url)} field is required.");
         }
 
@@ -49,8 +49,8 @@ namespace Feijuca.Auth.Api.UnitTests.Validators
             // Arrange
             var invalidKeycloakSettings = new KeycloakSettings
             {
-                Client = new Client { ClientId = string.Empty },
-                Secrets = new Secrets { ClientSecret = string.Empty },
+                Client = new Client { MasterClientId = string.Empty },
+                Secrets = new Secrets { MasterClientSecret = string.Empty },
                 ServerSettings = new ServerSettings { Url = string.Empty },
                 Realms = [
                     new Realm
@@ -70,8 +70,8 @@ namespace Feijuca.Auth.Api.UnitTests.Validators
                .Should()
                .BeFalse();
 
-            result.Errors.Should().Contain(e => e.ErrorMessage == $"The {nameof(KeycloakSettings.Client.ClientId)} field is required.");
-            result.Errors.Should().Contain(e => e.ErrorMessage == $"The {nameof(KeycloakSettings.Secrets.ClientSecret)} field is required.");
+            result.Errors.Should().Contain(e => e.ErrorMessage == $"The {nameof(KeycloakSettings.Client.MasterClientId)} field is required.");
+            result.Errors.Should().Contain(e => e.ErrorMessage == $"The {nameof(KeycloakSettings.Secrets.MasterClientSecret)} field is required.");
             result.Errors.Should().Contain(e => e.ErrorMessage == $"The {nameof(KeycloakSettings.ServerSettings.Url)} field is required.");
         }
 

@@ -38,9 +38,8 @@ namespace Feijuca.Auth.Api.UnitTests.Queries.Clients
 
             // Assert
             result
-                .IsSuccess
                 .Should()
-                .BeTrue();
+                .NotBeEmpty();
 
             _clientRepositoryMock.Verify(repo => repo.GetClientsAsync(It.IsAny<CancellationToken>()), Times.Once());
             _clientRepositoryMock.VerifyNoOtherCalls();
@@ -63,9 +62,8 @@ namespace Feijuca.Auth.Api.UnitTests.Queries.Clients
 
             // Assert
             result
-                .Error
                 .Should()
-                .Be(ClientErrors.GetClientsErrors);
+                .BeEmpty();
 
             _clientRepositoryMock.Verify(repo => repo.GetClientsAsync(It.IsAny<CancellationToken>()), Times.Once());
             _clientRepositoryMock.VerifyNoOtherCalls();

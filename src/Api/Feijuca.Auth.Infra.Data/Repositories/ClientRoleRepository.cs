@@ -16,7 +16,7 @@ namespace Feijuca.Auth.Infra.Data.Repositories
         public async Task<Result<IEnumerable<Role>>> GetRolesForClientAsync(string clientId, CancellationToken cancellationToken)
         {
             var tokenDetails = await _authRepository.GetAccessTokenAsync(cancellationToken);
-            var httpClient = CreateHttpClientWithHeaders(tokenDetails.Response.Access_Token);
+            using var httpClient = CreateHttpClientWithHeaders(tokenDetails.Response.Access_Token);
 
             var url = httpClient.BaseAddress
                     .AppendPathSegment("admin")
@@ -26,7 +26,7 @@ namespace Feijuca.Auth.Infra.Data.Repositories
                     .AppendPathSegment(clientId)
                     .AppendPathSegment("roles");
 
-            var response = await httpClient.GetAsync(url, cancellationToken);
+            using var response = await httpClient.GetAsync(url, cancellationToken);
 
             if (response.IsSuccessStatusCode)
             {
@@ -44,7 +44,7 @@ namespace Feijuca.Auth.Infra.Data.Repositories
         public async Task<Result<bool>> AddRoleAsync(string clientId, string name, string description, CancellationToken cancellationToken)
         {
             var tokenDetails = await _authRepository.GetAccessTokenAsync(cancellationToken);
-            var httpClient = CreateHttpClientWithHeaders(tokenDetails.Response.Access_Token);
+            using var httpClient = CreateHttpClientWithHeaders(tokenDetails.Response.Access_Token);
 
             var url = httpClient.BaseAddress
                     .AppendPathSegment("admin")
@@ -62,7 +62,7 @@ namespace Feijuca.Auth.Infra.Data.Repositories
             };
 
             var content = new StringContent(JsonConvert.SerializeObject(roleData), Encoding.UTF8, "application/json");
-            var response = await httpClient.PostAsync(url, content, cancellationToken);
+            using var response = await httpClient.PostAsync(url, content, cancellationToken);
 
             if (response.IsSuccessStatusCode)
             {

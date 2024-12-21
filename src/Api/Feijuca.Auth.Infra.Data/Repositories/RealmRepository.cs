@@ -41,7 +41,7 @@ namespace Feijuca.Auth.Infra.Data.Repositories
         public async Task<string> GetRealmConfigAsync(string name, CancellationToken cancellationToken)
         {
             var tokenDetails = await _authRepository.GetAccessTokenAsync(cancellationToken);
-            var httpClient = CreateHttpClientWithHeaders(tokenDetails.Response.Access_Token);
+            using var httpClient = CreateHttpClientWithHeaders(tokenDetails.Response.Access_Token);
 
             var url = httpClient.BaseAddress
                     .AppendPathSegment("admin")
@@ -49,7 +49,7 @@ namespace Feijuca.Auth.Infra.Data.Repositories
                     .AppendPathSegment(name)
                     .AppendPathSegment("clients");
 
-            var response = await httpClient.GetAsync(url, cancellationToken);
+            using var response = await httpClient.GetAsync(url, cancellationToken);
 
             if (response.IsSuccessStatusCode)
             {

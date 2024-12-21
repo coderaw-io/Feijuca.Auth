@@ -19,19 +19,22 @@ namespace Feijuca.Auth.Domain.Services
 
             var config = await configRepository.GetConfigAsync();
 
-            var realmsList = config.Realms?.ToList() ?? [];
-
-            realmsList.Add(new Models.Realm
+            if (!config.Realms?.Any(x => x.Name == realm.Realm) ?? false)
             {
-                Name = realm.Realm,
-                Audience = realm.Realm,
-                Issuer = config.ServerSettings.Url.AppendPathSegment(realm.Realm),
-                DefaultSwaggerTokenGeneration = realm.DefaultSwaggerTokenGeneration
-            });
+                var realmsList = config.Realms?.ToList() ?? [];
 
-            config.Realms = realmsList;
+                realmsList.Add(new Models.Realm
+                {
+                    Name = realm.Realm,
+                    Audience = realm.Realm,
+                    Issuer = config.ServerSettings.Url.AppendPathSegment(realm.Realm),
+                    DefaultSwaggerTokenGeneration = realm.DefaultSwaggerTokenGeneration
+                });
 
-            await configRepository.UpdateRealmConfigAsync(config.Id, config);
+                config.Realms = realmsList;
+
+                await configRepository.UpdateRealmConfigAsync(config.Id, config);
+            }
 
             return Result<bool>.Success(true);
         }

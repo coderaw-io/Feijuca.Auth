@@ -1,4 +1,5 @@
-﻿using Feijuca.Auth.Common.Errors;
+﻿using Feijuca.Auth.Common;
+using Feijuca.Auth.Common.Errors;
 using Feijuca.Auth.Common.Models;
 using Feijuca.Auth.Domain.Entities;
 using Feijuca.Auth.Domain.Interfaces;
@@ -8,7 +9,9 @@ using System.Text;
 
 namespace Feijuca.Auth.Infra.Data.Repositories
 {
-    public class ClientRepository(IHttpClientFactory httpClientFactory, IAuthRepository authRepository, ITenantService tenantService) : BaseRepository(httpClientFactory), IClientRepository
+    public class ClientRepository(IHttpClientFactory httpClientFactory, 
+        IAuthRepository authRepository, 
+        ITenantService tenantService) : BaseRepository(httpClientFactory), IClientRepository
     {
         private readonly IAuthRepository _authRepository = authRepository;
         private readonly ITenantService _tenantService = tenantService;
@@ -16,6 +19,7 @@ namespace Feijuca.Auth.Infra.Data.Repositories
         public async Task<bool> CreateClientAsync(ClientEntity client, CancellationToken cancellationToken)
         {
             var tokenDetails = await _authRepository.GetAccessTokenAsync(cancellationToken);
+
             using var httpClient = CreateHttpClientWithHeaders(tokenDetails.Response.Access_Token);
             var url = httpClient.BaseAddress
                    .AppendPathSegment("admin")
@@ -49,6 +53,30 @@ namespace Feijuca.Auth.Infra.Data.Repositories
             }
 
             return false;
+        }
+
+        public async Task<Result<ClientEntity>> GetClientAsync(string clientId, CancellationToken cancellationToken)
+        {
+            var tokenDetails = await _authRepository.GetAccessTokenAsync(cancellationToken);
+            using var httpClient = CreateHttpClientWithHeaders(tokenDetails.Response.Access_Token);
+            
+            var url = httpClient.BaseAddress
+                    .AppendPathSegment("admin")
+                    .AppendPathSegment("realms")
+                    .AppendPathSegment(_tenantService.Tenant)
+                    .AppendPathSegment("clients")
+                    .AppendQueryParam("clientId", clientId);
+
+            using var response = await httpClient.GetAsync(url, cancellationToken);
+
+            if (response.IsSuccessStatusCode)
+            {
+                var responseContent = await response.Content.ReadAsStringAsync(cancellationToken);
+                var result = JsonConvert.DeserializeObject<IEnumerable<ClientEntity>>(responseContent)!;
+                return Result<ClientEntity>.Success(result.First());
+            }
+
+            return Result<ClientEntity>.Failure(ClientErrors.GetClientsErrors);
         }
 
         public async Task<Result<IEnumerable<ClientEntity>>> GetClientsAsync(CancellationToken cancellationToken)

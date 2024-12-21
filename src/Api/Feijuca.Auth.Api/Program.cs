@@ -24,7 +24,7 @@ builder.Services
     .AddApiAuthentication(out KeycloakSettings KeycloakSettings)
     .AddEndpointsApiExplorer()
     .AddSwagger(KeycloakSettings)
-    .AddHttpClients(KeycloakSettings?.ServerSettings.Url)
+    .AddHttpClients()
     .ConfigureValidationErrorResponses()
     .AddCors(options =>
     {

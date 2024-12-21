@@ -11,9 +11,9 @@ namespace Feijuca.Auth.Common.Errors
             $"An error occurred while trying create a realm {TechnicalMessage}"
         );
 
-        public static void SetTechnicalMessage(string technicalMessage)
-        {
-            TechnicalMessage = technicalMessage;
-        }
+        public static Error UpdateRealmError => new(
+            "Realm.UpdateRealmError",
+            $"An error occurred while trying update the realm {TechnicalMessage}"
+        );
     }
 }

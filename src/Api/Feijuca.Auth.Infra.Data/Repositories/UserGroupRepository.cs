@@ -13,7 +13,7 @@ namespace Feijuca.Auth.Infra.Data.Repositories
         public async Task<Result<bool>> AddUserToGroupAsync(Guid userId, Guid groupId, CancellationToken cancellationToken)
         {
             var tokenDetails = await _authRepository.GetAccessTokenAsync(cancellationToken);
-            var httpClient = CreateHttpClientWithHeaders(tokenDetails.Response.Access_Token);
+            using var httpClient = CreateHttpClientWithHeaders(tokenDetails.Response.Access_Token);
 
             var url = httpClient.BaseAddress
                     .AppendPathSegment("admin")
@@ -37,7 +37,7 @@ namespace Feijuca.Auth.Infra.Data.Repositories
         public async Task<Result<bool>> RemoveUserFromGroupAsync(Guid userId, Guid groupId, CancellationToken cancellationToken)
         {
             var tokenDetails = await _authRepository.GetAccessTokenAsync(cancellationToken);
-            var httpClient = CreateHttpClientWithHeaders(tokenDetails.Response.Access_Token);
+            using var httpClient = CreateHttpClientWithHeaders(tokenDetails.Response.Access_Token);
 
             var url = httpClient.BaseAddress
                     .AppendPathSegment("admin")
@@ -48,7 +48,7 @@ namespace Feijuca.Auth.Infra.Data.Repositories
                     .AppendPathSegment("groups")
                     .AppendPathSegment(groupId);
 
-            var response = await httpClient.DeleteAsync(url, default);
+            using var response = await httpClient.DeleteAsync(url, default);
 
             if (response.IsSuccessStatusCode)
             {

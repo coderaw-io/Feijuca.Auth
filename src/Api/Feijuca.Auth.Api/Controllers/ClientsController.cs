@@ -2,7 +2,6 @@
 using Feijuca.Auth.Application.Queries.Clients;
 using Feijuca.Auth.Application.Requests.Client;
 using Feijuca.Auth.Attributes;
-using Feijuca.Auth.Common.Models;
 using MediatR;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
@@ -31,18 +30,17 @@ namespace Feijuca.Auth.Api.Controllers
         [ProducesResponseType(StatusCodes.Status200OK)]
         [ProducesResponseType(StatusCodes.Status500InternalServerError)]
         [ProducesResponseType(StatusCodes.Status400BadRequest)]
-        [RequiredRole("Feijuca.ApiReader")]
+        [RequiredRole("Feijuca.ApiReader")]        
         public async Task<IActionResult> GetClients(CancellationToken cancellationToken)
         {
             var result = await _mediator.Send(new GetAllClientsQuery(), cancellationToken);
 
-            if (result.IsSuccess)
+            if (!result.Any())
             {
-                return Ok(result.Response);
+                return Ok(result);
             }
 
-            var responseError = Result<string>.Failure(result.Error);
-            return BadRequest(responseError);
+            return BadRequest("Error while getting all clients.");
         }
 
         /// <summary>
@@ -65,7 +63,7 @@ namespace Feijuca.Auth.Api.Controllers
         {
             var result = await _mediator.Send(new AddClientCommand(addClient), cancellationToken);
 
-            if (result)
+            if (result.IsSuccess)
             {
                 return Ok();
             }

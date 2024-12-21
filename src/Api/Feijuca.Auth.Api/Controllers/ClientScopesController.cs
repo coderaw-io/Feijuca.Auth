@@ -1,4 +1,5 @@
 ﻿using Feijuca.Auth.Application.Commands.ClientScopes;
+using Feijuca.Auth.Application.Queries.ClientScopes;
 using Feijuca.Auth.Application.Requests.ClientScopes;
 using Feijuca.Auth.Attributes;
 using MediatR;
@@ -12,27 +13,32 @@ namespace Feijuca.Auth.Api.Controllers
     [Authorize]
     public class ClientScopesController(IMediator _mediator) : ControllerBase
     {
-
         [HttpGet]
         [ProducesResponseType(StatusCodes.Status200OK)]
         [ProducesResponseType(StatusCodes.Status500InternalServerError)]
         [ProducesResponseType(StatusCodes.Status400BadRequest)]
-        [RequiredRole("Feijuca.ApiReader")]
-        public IActionResult GetClientScopes()
+        [RequiredRole("Feijuca.ApiReader")]        
+        public async Task<IActionResult> GetClientScopes(CancellationToken cancellationToken)
         {
-            return Ok();
+            var result = await _mediator.Send(new GetClientScopesQuery(), cancellationToken);
+            return Ok(result);
         }
 
         [HttpPost]
         [ProducesResponseType(StatusCodes.Status200OK)]
         [ProducesResponseType(StatusCodes.Status500InternalServerError)]
         [ProducesResponseType(StatusCodes.Status400BadRequest)]
-        [RequiredRole("Feijuca.ApiReader")]
-        public IActionResult AddClientScope([FromBody] AddClientScopesRequest addClientScopesRequest)
+        [RequiredRole("Feijuca.ApiWriter")]
+        public async Task<IActionResult> AddClientScope([FromBody] AddClientScopesRequest addClientScopesRequest, CancellationToken cancellationToken)
         {
-            _mediator.Send(new AddClientScopeCommand(addClientScopesRequest));
+            var result = await _mediator.Send(new AddClientScopesCommand([addClientScopesRequest]), cancellationToken);
 
-            return Ok();
+            if (result.IsSuccess)
+            {
+                return Ok();
+            }
+
+            return BadRequest(result.Error);
         }
     }
 }

@@ -21,7 +21,7 @@ namespace Feijuca.Auth.Infra.Data.Repositories
 
             if (tokenDetailsResult.IsSuccess)
             {
-                var httpClient = CreateHttpClientWithHeaders(tokenDetailsResult.Response.Access_Token);
+                using var httpClient = CreateHttpClientWithHeaders(tokenDetailsResult.Response.Access_Token);
 
                 var url = httpClient.BaseAddress
                         .AppendPathSegment("admin")
@@ -29,7 +29,7 @@ namespace Feijuca.Auth.Infra.Data.Repositories
                         .AppendPathSegment(_tenantService.Tenant)
                         .AppendPathSegment("groups");
 
-                var response = await httpClient.GetAsync(url, cancellationToken);
+                using var response = await httpClient.GetAsync(url, cancellationToken);
                 var groups = await response.Content.ReadAsStringAsync(cancellationToken);
                 var users = JsonConvert.DeserializeObject<IEnumerable<Group>>(groups)!;
 
@@ -42,7 +42,7 @@ namespace Feijuca.Auth.Infra.Data.Repositories
         public async Task<Result> CreateAsync(string name, Dictionary<string, string[]> attributes, CancellationToken cancellationToken)
         {
             var tokenDetails = await _authRepository.GetAccessTokenAsync(cancellationToken);
-            var httpClient = CreateHttpClientWithHeaders(tokenDetails.Response.Access_Token);
+            using var httpClient = CreateHttpClientWithHeaders(tokenDetails.Response.Access_Token);
 
             var url = httpClient.BaseAddress
                     .AppendPathSegment("admin")
@@ -57,9 +57,8 @@ namespace Feijuca.Auth.Infra.Data.Repositories
             };
 
             var jsonContent = JsonConvert.SerializeObject(group);
-            var content = new StringContent(jsonContent, Encoding.UTF8, "application/json");
-
-            var response = await httpClient.PostAsync(url, content, cancellationToken);
+            using var content = new StringContent(jsonContent, Encoding.UTF8, "application/json");
+            using var response = await httpClient.PostAsync(url, content, cancellationToken);
             if (response.IsSuccessStatusCode)
             {
                 return Result.Success();
@@ -72,7 +71,7 @@ namespace Feijuca.Auth.Infra.Data.Repositories
         public async Task<Result> DeleteAsync(string id, CancellationToken cancellationToken)
         {
             var tokenDetails = await _authRepository.GetAccessTokenAsync(cancellationToken);
-            var httpClient = CreateHttpClientWithHeaders(tokenDetails.Response.Access_Token);
+            using var httpClient = CreateHttpClientWithHeaders(tokenDetails.Response.Access_Token);
 
             var url = httpClient.BaseAddress
                     .AppendPathSegment("admin")
@@ -81,7 +80,7 @@ namespace Feijuca.Auth.Infra.Data.Repositories
                     .AppendPathSegment("groups")
                     .AppendPathSegment(id);
 
-            var response = await httpClient.DeleteAsync(url, cancellationToken);
+            using var response = await httpClient.DeleteAsync(url, cancellationToken);
             if (response.IsSuccessStatusCode)
             {
                 return Result.Success();
@@ -94,7 +93,7 @@ namespace Feijuca.Auth.Infra.Data.Repositories
         public async Task<Result<IEnumerable<User>>> GetUsersInGroupAsync(string id, UserFilters userFilters, CancellationToken cancellationToken)
         {
             var tokenDetails = await _authRepository.GetAccessTokenAsync(cancellationToken);
-            var httpClient = CreateHttpClientWithHeaders(tokenDetails.Response.Access_Token);
+            using var httpClient = CreateHttpClientWithHeaders(tokenDetails.Response.Access_Token);
             int first = (userFilters.PageFilter.PageNumber - 1) * userFilters.PageFilter.PageSize;
 
             var url = httpClient.BaseAddress
@@ -108,7 +107,7 @@ namespace Feijuca.Auth.Infra.Data.Repositories
                     .SetQueryParam("max", userFilters.PageFilter.PageSize)
                     .SetCollectionQueryParam("username", userFilters.Usernames);
 
-            var response = await httpClient.GetAsync(url, cancellationToken);
+            using var response = await httpClient.GetAsync(url, cancellationToken);
 
             if (response.IsSuccessStatusCode)
             {

@@ -8,8 +8,9 @@ using Microsoft.AspNetCore.Mvc;
 
 namespace Feijuca.Auth.Api.Controllers
 {
-    [Route("api/v1/realm")]
+    [Route("api/v1/realms")]
     [ApiController]
+    [Authorize]
     public class RealmsController(IMediator mediator) : ControllerBase
     {
         private readonly IMediator _mediator = mediator;
@@ -27,12 +28,11 @@ namespace Feijuca.Auth.Api.Controllers
         /// <response code="400">The request was invalid or could not be processed.</response>
         /// <response code="500">An internal server error occurred while processing the request.</response>
         [HttpGet]
-        [Route("/export/{name}", Name = nameof(ExportRealm))]
+        [Route("export/{name}", Name = nameof(ExportRealm))]
         [ProducesResponseType(StatusCodes.Status200OK)]
         [ProducesResponseType(StatusCodes.Status500InternalServerError)]
         [ProducesResponseType(StatusCodes.Status400BadRequest)]
-        [RequiredRole("Feijuca.ApiReader")]
-        [Authorize]
+        [RequiredRole("Feijuca.ApiReader")]        
         public async Task<IActionResult> ExportRealm([FromRoute] string name, CancellationToken cancellationToken)
         {
             var result = await _mediator.Send(new GetRealmConfigurationQuery(name), cancellationToken);
@@ -63,9 +63,9 @@ namespace Feijuca.Auth.Api.Controllers
         [ProducesResponseType(StatusCodes.Status400BadRequest)]
         public async Task<IActionResult> AddRealm([FromBody] AddRealmRequest realm, CancellationToken cancellationToken)
         {
-            var result = await _mediator.Send(new AddRealmCommand(realm), cancellationToken);
+            var result = await _mediator.Send(new AddRealmsCommand([realm]), cancellationToken);
 
-            if (result)
+            if (result.IsSuccess)
             {
                 return Created("/api/v1/realm", result);
             }
