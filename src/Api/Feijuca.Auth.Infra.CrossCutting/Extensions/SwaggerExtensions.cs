@@ -10,7 +10,9 @@ namespace Feijuca.Auth.Infra.CrossCutting.Extensions
     {
         public static IServiceCollection AddSwagger(this IServiceCollection services, KeycloakSettings? keycloakSettings)
         {
-            if (keycloakSettings is not null)
+            var issuer = keycloakSettings?.Realms?.FirstOrDefault(x => x.DefaultSwaggerTokenGeneration)?.Issuer ?? "";
+
+            if (keycloakSettings is not null && !string.IsNullOrEmpty(issuer))
             {
                 services.AddSwaggerGen(c =>
                 {
@@ -23,7 +25,7 @@ namespace Feijuca.Auth.Infra.CrossCutting.Extensions
                         {
                             Password = new OpenApiOAuthFlow
                             {
-                                TokenUrl = new Uri(keycloakSettings.Realm.Issuer.AppendPathSegment($"/protocol/openid-connect/token")),
+                                TokenUrl = new Uri(issuer.AppendPathSegment($"/protocol/openid-connect/token")),
                             }
                         }
                     });

@@ -10,6 +10,11 @@ namespace Feijuca.Auth.Common.Errors
             "Clients.GetClientsErrors",
             $"An error occurred while trying get clients {TechnicalMessage}"
         );
+        
+        public static Error CreateClientError => new(
+            "Clients.CreateClientError",
+            $"An error occurred while trying create a new client {TechnicalMessage}"
+        );
 
         public static void SetTechnicalMessage(string technicalMessage)
         {

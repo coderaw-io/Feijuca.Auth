@@ -24,7 +24,7 @@ builder.Services
     .AddApiAuthentication(out KeycloakSettings KeycloakSettings)
     .AddEndpointsApiExplorer()
     .AddSwagger(KeycloakSettings)
-    .AddHttpClients(KeycloakSettings?.ServerSettings.Url)
+    .AddHttpClients()
     .ConfigureValidationErrorResponses()
     .AddCors(options =>
     {
@@ -49,7 +49,7 @@ app.UseCors("AllowAllOrigins")
        c.OAuthUseBasicAuthenticationWithAccessCodeGrant();
    });
 
-if (KeycloakSettings is not null)
+if (KeycloakSettings?.Realms?.Any() ?? false)
 {
     app.UseAuthorization()
        .UseMiddleware<TenantMiddleware>();

@@ -14,7 +14,7 @@ namespace Feijuca.Auth.Api.UnitTests.Command.GroupRoles
         private readonly Fixture _fixture = new();
         private readonly Mock<IGroupRepository> _groupRepositoryMock = new();
         private readonly Mock<IGroupRolesRepository> _groupRolesRepositoryMock = new();
-        private readonly Mock<IRoleRepository> _roleRepositoryMock = new();
+        private readonly Mock<IClientRoleRepository> _roleRepositoryMock = new();
         private readonly RemoveRoleFromGroupCommandHandler _handler;
 
         public RemoveRoleFromGroupCommandHandlerTests()
@@ -46,11 +46,11 @@ namespace Feijuca.Auth.Api.UnitTests.Command.GroupRoles
                 .ReturnsAsync(groupsResult);
 
             _roleRepositoryMock
-                .Setup(repo => repo.GetRolesForClientAsync(It.IsAny<Guid>(), It.IsAny<CancellationToken>()))
+                .Setup(repo => repo.GetRolesForClientAsync(It.IsAny<string>(), It.IsAny<CancellationToken>()))
                 .ReturnsAsync(rolesResult);
 
             _groupRolesRepositoryMock
-                .Setup(repo => repo.RemoveRoleFromGroupAsync(It.IsAny<Guid>(), It.IsAny<Guid>(), It.IsAny<Guid>(), It.IsAny<string>(), It.IsAny<CancellationToken>()))
+                .Setup(repo => repo.RemoveRoleFromGroupAsync(It.IsAny<string>(), It.IsAny<string>(), It.IsAny<Guid>(), It.IsAny<string>(), It.IsAny<CancellationToken>()))
                 .ReturnsAsync(groupsResult);
 
             // Act
@@ -63,10 +63,10 @@ namespace Feijuca.Auth.Api.UnitTests.Command.GroupRoles
                 .BeTrue();
 
             _groupRepositoryMock.Verify(repo => repo.GetAllAsync(It.IsAny<CancellationToken>()), Times.Once);
-            _roleRepositoryMock.Verify(repo => repo.GetRolesForClientAsync(It.IsAny<Guid>(), It.IsAny<CancellationToken>()), Times.Once);
+            _roleRepositoryMock.Verify(repo => repo.GetRolesForClientAsync(It.IsAny<string>(), It.IsAny<CancellationToken>()), Times.Once);
 
             _groupRolesRepositoryMock
-                .Verify(repo => repo.RemoveRoleFromGroupAsync(It.IsAny<Guid>(), It.IsAny<Guid>(), It.IsAny<Guid>(), It.IsAny<string>(), It.IsAny<CancellationToken>()));
+                .Verify(repo => repo.RemoveRoleFromGroupAsync(It.IsAny<string>(), It.IsAny<string>(), It.IsAny<Guid>(), It.IsAny<string>(), It.IsAny<CancellationToken>()));
 
             _groupRepositoryMock.VerifyNoOtherCalls();
             _roleRepositoryMock.VerifyNoOtherCalls();

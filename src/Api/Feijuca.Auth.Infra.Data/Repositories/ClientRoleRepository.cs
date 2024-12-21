@@ -4,17 +4,16 @@ using Feijuca.Auth.Domain.Entities;
 using Feijuca.Auth.Domain.Interfaces;
 using Flurl;
 using Newtonsoft.Json;
-using System.Net.Http.Headers;
 using System.Text;
 
 namespace Feijuca.Auth.Infra.Data.Repositories
 {
-    public class RoleRepository(IHttpClientFactory httpClientFactory, IAuthRepository authRepository, ITenantService tenantService) : BaseRepository(httpClientFactory), IRoleRepository
+    public class ClientRoleRepository(IHttpClientFactory httpClientFactory, IAuthRepository authRepository, ITenantService tenantService) : BaseRepository(httpClientFactory), IClientRoleRepository
     {
         private readonly IAuthRepository _authRepository = authRepository;
         private readonly ITenantService _tenantService = tenantService;
 
-        public async Task<Result<IEnumerable<Role>>> GetRolesForClientAsync(Guid clientId, CancellationToken cancellationToken)
+        public async Task<Result<IEnumerable<Role>>> GetRolesForClientAsync(string clientId, CancellationToken cancellationToken)
         {
             var tokenDetails = await _authRepository.GetAccessTokenAsync(cancellationToken);
             var httpClient = CreateHttpClientWithHeaders(tokenDetails.Response.Access_Token);
@@ -42,7 +41,7 @@ namespace Feijuca.Auth.Infra.Data.Repositories
         }
 
 
-        public async Task<Result<bool>> AddRoleAsync(Guid clientId, string name, string description, CancellationToken cancellationToken)
+        public async Task<Result<bool>> AddRoleAsync(string clientId, string name, string description, CancellationToken cancellationToken)
         {
             var tokenDetails = await _authRepository.GetAccessTokenAsync(cancellationToken);
             var httpClient = CreateHttpClientWithHeaders(tokenDetails.Response.Access_Token);

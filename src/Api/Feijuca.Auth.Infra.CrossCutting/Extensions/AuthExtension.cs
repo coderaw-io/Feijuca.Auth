@@ -13,13 +13,13 @@ namespace Feijuca.Auth.Infra.CrossCutting.Extensions
         {
             var serviceProvider = services.BuildServiceProvider();
             var KeycloakSettingsRepository = serviceProvider.GetRequiredService<IConfigRepository>();
-            serverSettings = KeycloakSettingsRepository.GetConfig();
+            serverSettings = KeycloakSettingsRepository.GetConfigAsync().GetAwaiter().GetResult();
 
             if (serverSettings is not null)
             {
                 services.AddHttpContextAccessor();
                 services.AddSingleton<JwtSecurityTokenHandler>();
-                services.AddKeyCloakAuth(serverSettings.Client, serverSettings.ServerSettings, [serverSettings.Realm]);
+                services.AddKeyCloakAuth(serverSettings.Client, serverSettings.ServerSettings, serverSettings.Realms ?? []);
 
                 services.AddSingleton(new TokenCredentials()
                 {

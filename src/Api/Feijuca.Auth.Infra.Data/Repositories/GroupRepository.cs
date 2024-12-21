@@ -69,7 +69,7 @@ namespace Feijuca.Auth.Infra.Data.Repositories
             return Result.Failure(GroupErrors.CreationGroupError);
         }
 
-        public async Task<Result> DeleteAsync(Guid id, CancellationToken cancellationToken)
+        public async Task<Result> DeleteAsync(string id, CancellationToken cancellationToken)
         {
             var tokenDetails = await _authRepository.GetAccessTokenAsync(cancellationToken);
             var httpClient = CreateHttpClientWithHeaders(tokenDetails.Response.Access_Token);
@@ -91,7 +91,7 @@ namespace Feijuca.Auth.Infra.Data.Repositories
             return Result.Failure(GroupErrors.DeletionGroupError);
         }
 
-        public async Task<Result<IEnumerable<User>>> GetUsersInGroupAsync(Guid id, UserFilters userFilters, CancellationToken cancellationToken)
+        public async Task<Result<IEnumerable<User>>> GetUsersInGroupAsync(string id, UserFilters userFilters, CancellationToken cancellationToken)
         {
             var tokenDetails = await _authRepository.GetAccessTokenAsync(cancellationToken);
             var httpClient = CreateHttpClientWithHeaders(tokenDetails.Response.Access_Token);

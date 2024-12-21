@@ -1,5 +1,4 @@
 ﻿using Feijuca.Auth.Application.Requests.Pagination;
-
 using Microsoft.AspNetCore.Mvc;
 
 namespace Feijuca.Auth.Application.Requests.GroupUsers
@@ -15,7 +14,7 @@ namespace Feijuca.Auth.Application.Requests.GroupUsers
         public PageFilterRequest PageFilter { get; set; }
 
         [FromQuery]
-        public Guid GroupId { get; set; }
+        public string GroupId { get; set; } = null!;
 
         [FromQuery]
         public IEnumerable<string>? Emails { get; set; }

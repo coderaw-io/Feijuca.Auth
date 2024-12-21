@@ -3,12 +3,9 @@ using Feijuca.Auth.Common.Models;
 using Feijuca.Auth.Domain.Entities;
 using Feijuca.Auth.Domain.Interfaces;
 using Flurl;
-
 using Newtonsoft.Json;
 using Newtonsoft.Json.Linq;
-
 using System.Data;
-using System.Net.Http.Headers;
 using System.Text;
 
 namespace Feijuca.Auth.Infra.Data.Repositories
@@ -19,7 +16,7 @@ namespace Feijuca.Auth.Infra.Data.Repositories
         private readonly IAuthRepository _authRepository = authRepository;
         private readonly ITenantService _tenantService = tenantService;
 
-        public async Task<Result<bool>> AddRoleToGroupAsync(Guid groupId, Guid clientId, Guid roleId, string roleName, CancellationToken cancellationToken)
+        public async Task<Result<bool>> AddRoleToGroupAsync(string groupId, string clientId, Guid roleId, string roleName, CancellationToken cancellationToken)
         {
             var tokenDetails = await _authRepository.GetAccessTokenAsync(cancellationToken);
             var httpClient = CreateHttpClientWithHeaders(tokenDetails.Response.Access_Token);
@@ -51,7 +48,7 @@ namespace Feijuca.Auth.Infra.Data.Repositories
             return Result<bool>.Failure(GroupRolesErrors.ErrorAddRoleToGroup);
         }
 
-        public async Task<Result<IEnumerable<ClientMapping>>> GetGroupRolesAsync(Guid groupId, CancellationToken cancellationToken)
+        public async Task<Result<IEnumerable<ClientMapping>>> GetGroupRolesAsync(string groupId, CancellationToken cancellationToken)
         {
             var tokenDetails = await _authRepository.GetAccessTokenAsync(cancellationToken);
             var httpClient = CreateHttpClientWithHeaders(tokenDetails.Response.Access_Token);
@@ -81,7 +78,7 @@ namespace Feijuca.Auth.Infra.Data.Repositories
             return Result<IEnumerable<ClientMapping>>.Failure(GroupRolesErrors.ErrorGetGroupRoles);
         }
 
-        public async Task<Result> RemoveRoleFromGroupAsync(Guid clientId, Guid groupId, Guid roleId, string roleName, CancellationToken cancellationToken)
+        public async Task<Result> RemoveRoleFromGroupAsync(string clientId, string groupId, Guid roleId, string roleName, CancellationToken cancellationToken)
         {
             var tokenDetails = await _authRepository.GetAccessTokenAsync(cancellationToken);
             var httpClient = CreateHttpClientWithHeaders(tokenDetails.Response.Access_Token);

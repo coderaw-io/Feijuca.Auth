@@ -17,7 +17,6 @@ namespace Feijuca.Auth.Infra.Data.Repositories
         ITenantService tenantService)
         : BaseRepository(httpClientFactory), IUserRepository
     {
-        private readonly TokenCredentials _tokenCredentials = tokenCredentials;
         private readonly IHttpClientFactory _httpClientFactory = httpClientFactory;
         private readonly IAuthRepository _authRepository = authRepository;
         private readonly ITenantService _tenantService = tenantService;
