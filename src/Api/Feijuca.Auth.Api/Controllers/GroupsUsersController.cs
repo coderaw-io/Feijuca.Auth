@@ -28,7 +28,7 @@ namespace Feijuca.Auth.Api.Controllers
         /// <response code="204">The user was successfully added to the group.</response>
         /// <response code="400">The request was invalid or could not be processed.</response>
         /// <response code="500">An internal server error occurred while processing the request.</response>
-        [HttpPost("/group/user", Name = nameof(AddUserToGroup))]
+        [HttpPost("groups/users", Name = nameof(AddUserToGroup))]
         [ProducesResponseType(StatusCodes.Status204NoContent)]
         [ProducesResponseType(StatusCodes.Status500InternalServerError)]
         [ProducesResponseType(StatusCodes.Status400BadRequest)]
@@ -59,7 +59,7 @@ namespace Feijuca.Auth.Api.Controllers
         /// <response code="200">The users in the group were successfully retrieved.</response>
         /// <response code="400">The request was invalid or could not be processed.</response>
         /// <response code="500">An internal server error occurred while processing the request.</response>
-        [HttpGet("/group/user", Name = nameof(GetUsersInGroup))]
+        [HttpGet("groups/users", Name = nameof(GetUsersInGroup))]
         [ProducesResponseType(StatusCodes.Status200OK)]
         [ProducesResponseType(StatusCodes.Status500InternalServerError)]
         [ProducesResponseType(StatusCodes.Status400BadRequest)]
@@ -89,7 +89,7 @@ namespace Feijuca.Auth.Api.Controllers
         /// <response code="204">The user was successfully removed from the group.</response>
         /// <response code="400">The request was invalid or could not be processed.</response>
         /// <response code="500">An internal server error occurred while processing the request.</response>
-        [HttpDelete("/group/user", Name = nameof(RemoveUserFromGroup))]
+        [HttpDelete("groups/users", Name = nameof(RemoveUserFromGroup))]
         [ProducesResponseType(StatusCodes.Status204NoContent)]
         [ProducesResponseType(StatusCodes.Status500InternalServerError)]
         [ProducesResponseType(StatusCodes.Status400BadRequest)]

@@ -25,7 +25,7 @@ namespace Feijuca.Auth.Extensions
                 .AddKeycloakWebApi(
                     options =>
                     {
-                        options.Resource = client.ClientId;
+                        options.Resource = client.MasterClientId;
                         options.AuthServerUrl = serverSettings.Url;
                         options.VerifyTokenAudience = true;
                     },
@@ -204,7 +204,7 @@ namespace Feijuca.Auth.Extensions
                         .AddPolicy(policy.Name, p =>
                         {
                             p.RequireResourceRolesForClient(
-                                client.ClientId,
+                                client.MasterClientId,
                                 policy.Roles!.ToArray());
                         });
                 }

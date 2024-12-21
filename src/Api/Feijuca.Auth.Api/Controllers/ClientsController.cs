@@ -31,7 +31,7 @@ namespace Feijuca.Auth.Api.Controllers
         [ProducesResponseType(StatusCodes.Status200OK)]
         [ProducesResponseType(StatusCodes.Status500InternalServerError)]
         [ProducesResponseType(StatusCodes.Status400BadRequest)]
-        [RequiredRole("Feijuca.ApiReader")]
+        [RequiredRole("Feijuca.ApiReader")]        
         public async Task<IActionResult> GetClients(CancellationToken cancellationToken)
         {
             var result = await _mediator.Send(new GetAllClientsQuery(), cancellationToken);
@@ -65,7 +65,7 @@ namespace Feijuca.Auth.Api.Controllers
         {
             var result = await _mediator.Send(new AddClientCommand(addClient), cancellationToken);
 
-            if (result)
+            if (result.IsSuccess)
             {
                 return Ok();
             }

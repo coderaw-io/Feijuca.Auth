@@ -7,18 +7,18 @@ using Newtonsoft.Json;
 
 namespace Feijuca.Auth.Infra.Data.Repositories
 {
-    public class AuthRepository(TokenCredentials tokenCredentials, IHttpClientFactory httpClientFactory) : IAuthRepository
+    public class AuthRepository(IHttpClientFactory httpClientFactory, IConfigRepository configRepository) : IAuthRepository
     {
-        private readonly TokenCredentials _tokenCredentials = tokenCredentials;
         private readonly IHttpClientFactory _httpClientFactory = httpClientFactory;
 
         public async Task<Result<TokenDetails>> GetAccessTokenAsync(CancellationToken cancellationToken)
         {
+            var config = await configRepository.GetConfigAsync();
             var requestData = new FormUrlEncodedContent(
             [
                 new KeyValuePair<string, string>("grant_type", "client_credentials"),
-                new KeyValuePair<string, string>("client_id", _tokenCredentials.Client_Id),
-                new KeyValuePair<string, string>("client_secret", _tokenCredentials.Client_Secret),
+                new KeyValuePair<string, string>("client_id", config.Client.ClientId),
+                new KeyValuePair<string, string>("client_secret", config.Secrets.ClientSecret),
             ]);
 
             using var httpClient = _httpClientFactory.CreateClient("KeycloakClient");

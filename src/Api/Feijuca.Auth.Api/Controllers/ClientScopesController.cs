@@ -12,12 +12,11 @@ namespace Feijuca.Auth.Api.Controllers
     [Authorize]
     public class ClientScopesController(IMediator _mediator) : ControllerBase
     {
-
         [HttpGet]
         [ProducesResponseType(StatusCodes.Status200OK)]
         [ProducesResponseType(StatusCodes.Status500InternalServerError)]
         [ProducesResponseType(StatusCodes.Status400BadRequest)]
-        [RequiredRole("Feijuca.ApiReader")]
+        [RequiredRole("Feijuca.ApiReader")]        
         public IActionResult GetClientScopes()
         {
             return Ok();
@@ -27,12 +26,17 @@ namespace Feijuca.Auth.Api.Controllers
         [ProducesResponseType(StatusCodes.Status200OK)]
         [ProducesResponseType(StatusCodes.Status500InternalServerError)]
         [ProducesResponseType(StatusCodes.Status400BadRequest)]
-        [RequiredRole("Feijuca.ApiReader")]
-        public IActionResult AddClientScope([FromBody] AddClientScopesRequest addClientScopesRequest)
+        [RequiredRole("Feijuca.ApiWriter")]
+        public async Task<IActionResult> AddClientScope([FromBody] AddClientScopesRequest addClientScopesRequest)
         {
-            _mediator.Send(new AddClientScopeCommand(addClientScopesRequest));
+            var result = await _mediator.Send(new AddClientScopesCommand([addClientScopesRequest]));
 
-            return Ok();
+            if (result.IsSuccess)
+            {
+                return Ok();
+            }
+
+            return BadRequest(result.Error);
         }
     }
 }
